@@ -4,7 +4,7 @@ info:
   version: 1.0.0
 
 paths:
-  /todos:
+  /todo:
     get:
       summary: Todo 一覧の取得
       responses:
