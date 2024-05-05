@@ -4,8 +4,11 @@ import (
 	"log"
 	"net/http"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
+	"github.com/rikuya98/goTodoApp/config"
 )
+
 func getTodoHandler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("get Todo"))
 }
@@ -20,8 +23,8 @@ func deleteTodoHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	config.LoadDBConfig()
 	r := mux.NewRouter()
-
 	r.HandleFunc("/todo", getTodoHandler).Methods(http.MethodGet)
 	r.HandleFunc("/todo", postTodoHandler).Methods(http.MethodPost)
 	r.HandleFunc("/todo", putTodoHandler).Methods(http.MethodPut)
