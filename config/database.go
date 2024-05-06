@@ -1,9 +1,12 @@
 package config
 
 import (
+	"fmt"
+	"log"
 	"os"
 
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 )
 
 type DBConfig struct {
@@ -15,12 +18,22 @@ type DBConfig struct {
 
 var MySqlConf DBConfig
 
-func LoadDBConfig() {
+func loadDBConfig() {
 	dbConfig := DBConfig{
-		Name: os.Getenv("DB_NAME"),
-		User: os.Getenv("DB_USER"),
-		Pass: os.Getenv("DB_PASS"),
-		Host: os.Getenv("DB_HOST"),
+		Name: os.Getenv("DBNAME"),
+		User: os.Getenv("DBUSER"),
+		Pass: os.Getenv("DBPASS"),
+		Host: os.Getenv("DBHOST"),
 	}
 	MySqlConf = dbConfig
+}
+func InitDB() *sqlx.DB {
+	loadDBConfig()
+	dbConf := fmt.Sprintf("%s:%s@tcp(%s)/%s?parseTime=true", MySqlConf.User, MySqlConf.Pass, MySqlConf.Host, MySqlConf.Name)
+	log.Println(dbConf)
+	db, err := sqlx.Connect("mysql", dbConf)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return db
 }
