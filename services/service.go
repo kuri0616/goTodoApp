@@ -1,11 +1,13 @@
 package services
 
-import "database/sql"
+import (
+	"github.com/jmoiron/sqlx"
+)
 
 type TodoAppSev struct {
-	db *sql.DB
+	db *sqlx.DB
 }
 
-func NewTodoAppSev(db *sql.DB) *TodoAppSev {
+func NewTodoAppSev(db *sqlx.DB) *TodoAppSev {
 	return &TodoAppSev{db: db}
 }
