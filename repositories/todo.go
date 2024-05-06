@@ -5,6 +5,15 @@ import (
 	"github.com/rikuya98/goTodoApp/models"
 )
 
+func GetTodos(db *sqlx.DB) ([]models.Todo, error) {
+	var todos []models.Todo
+	err := db.Select(&todos, "SELECT id,task,due_date, status,created_at,updated_at FROM todos")
+	if err != nil {
+		return []models.Todo{}, err
+	}
+	return todos, nil
+}
+
 func InsertTodo(db *sqlx.DB, todo models.Todo) (models.Todo, error) {
 	var newTodo models.Todo
 	result, err := db.Exec("INSERT INTO todos (task,due_date,status,created_at) VALUES (?, ?, 0, now())", todo.Task, todo.DueDate)

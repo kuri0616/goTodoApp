@@ -29,7 +29,7 @@ func loadDBConfig() {
 }
 func InitDB() *sqlx.DB {
 	loadDBConfig()
-	dbConf := fmt.Sprintf("%s:%s@tcp(%s)/%s", MySqlConf.User, MySqlConf.Pass, MySqlConf.Host, MySqlConf.Name)
+	dbConf := fmt.Sprintf("%s:%s@tcp(%s)/%s?parseTime=true", MySqlConf.User, MySqlConf.Pass, MySqlConf.Host, MySqlConf.Name)
 	log.Println(dbConf)
 	db, err := sqlx.Connect("mysql", dbConf)
 	if err != nil {
