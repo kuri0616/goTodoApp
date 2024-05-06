@@ -17,8 +17,8 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/todo", appSev.GetTodoHandler).Methods(http.MethodGet)
 	r.HandleFunc("/todo", appSev.PostTodoHandler).Methods(http.MethodPost)
-	r.HandleFunc("/todo", appSev.PutTodoHandler).Methods(http.MethodPut)
-	r.HandleFunc("/todo", appSev.DeleteTodoHandler).Methods(http.MethodDelete)
+	r.HandleFunc("/todo/{id}", appSev.PutTodoHandler).Methods(http.MethodPut)
+	r.HandleFunc("/todo/{id}", appSev.DeleteTodoHandler).Methods(http.MethodDelete)
 
 	log.Println("Server started on port 8080")
 	log.Fatal(http.ListenAndServe(":8080", r))

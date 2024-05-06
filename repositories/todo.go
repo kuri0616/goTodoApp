@@ -29,3 +29,19 @@ func InsertTodo(db *sqlx.DB, todo models.Todo) (models.Todo, error) {
 	}
 	return newTodo, nil
 }
+
+func UpdateTodo(db *sqlx.DB, todo models.Todo) (models.Todo, error) {
+	_, err := db.Exec("UPDATE todos SET task = ?, due_date = ?, status = ? WHERE id = ?", todo.Task, todo.DueDate, todo.Status, todo.Id)
+	if err != nil {
+		return models.Todo{}, err
+	}
+	return todo, nil
+}
+
+func DeleteTodo(db *sqlx.DB, id int) error {
+	_, err := db.Exec("DELETE FROM todos WHERE id = ?", id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
