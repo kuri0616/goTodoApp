@@ -15,7 +15,7 @@ func (s *TodoAppSev) GetTodoServices() ([]models.Todo, error) {
 	}
 	if len(todos) == 0 {
 		err = apperrors.ErrNoData
-		apperrors.Nodata.Wrap(err, "No data found")
+		_ = apperrors.Nodata.Wrap(err, "No data found")
 		return []models.Todo{}, err
 	}
 	return todos, nil
@@ -23,7 +23,7 @@ func (s *TodoAppSev) GetTodoServices() ([]models.Todo, error) {
 func (s *TodoAppSev) PostTodoServices(todo models.Todo) (models.Todo, error) {
 	newTodo, err := repositories.InsertTodo(s.db, todo)
 	if err != nil {
-		err = apperrors.InserDetaFailed.Wrap(err, "Failed to insert todo")
+		err = apperrors.InsertDataFailed.Wrap(err, "Failed to insert todo")
 		return models.Todo{}, err
 	}
 	return newTodo, nil
