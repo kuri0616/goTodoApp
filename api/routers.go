@@ -1,6 +1,7 @@
 package api
 
 import (
+	"github.com/rikuya98/goTodoApp/api/middlewares"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -19,5 +20,6 @@ func NewRouter() *mux.Router {
 	r.HandleFunc("/todo", con.PostTodoHandler).Methods(http.MethodPost)
 	r.HandleFunc("/todo/{id}", con.PutTodoHandler).Methods(http.MethodPut)
 	r.HandleFunc("/todo/{id}", con.DeleteTodoHandler).Methods(http.MethodDelete)
+	r.Use(middlewares.LoggingMiddleware)
 	return r
 }
