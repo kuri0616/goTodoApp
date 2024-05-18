@@ -2,21 +2,21 @@ package controllers
 
 import (
 	"encoding/json"
+	"github.com/rikuya98/goTodoApp/controllers/service"
 	"log"
 	"net/http"
 	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/rikuya98/goTodoApp/models"
-	"github.com/rikuya98/goTodoApp/services"
 )
 
 type TodoController struct {
-	service services.TodoAppSev
+	service service.TodoService
 }
 
-func NewTodoController(service *services.TodoAppSev) *TodoController {
-	return &TodoController{service: *service}
+func NewTodoController(service service.TodoService) *TodoController {
+	return &TodoController{service: service}
 }
 
 func (s *TodoController) GetTodoHandler(w http.ResponseWriter, r *http.Request) {
