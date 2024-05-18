@@ -46,12 +46,20 @@ func (s *TodoController) PostTodoHandler(w http.ResponseWriter, r *http.Request)
 }
 func (s *TodoController) PutTodoHandler(w http.ResponseWriter, r *http.Request) {
 	var todo models.Todo
+	var err error
+
 	if err := json.NewDecoder(r.Body).Decode(&todo); err != nil {
 		println("Failed to decode json", err)
 		http.Error(w, "Bad Request", http.StatusBadRequest)
 		return
 	}
-	todo.Id, _ = strconv.Atoi(mux.Vars(r)["id"])
+	todo.Id, err = strconv.Atoi(mux.Vars(r)["id"])
+	if err != nil {
+		println("Failed to convert id", err)
+		http.Error(w, "Bad Request", http.StatusBadRequest)
+		return
+	}
+
 	updatedTodo, err := s.service.PutTodoServices(todo)
 	if err != nil {
 		println("Failed to update todo", err)
