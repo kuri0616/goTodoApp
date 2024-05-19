@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"github.com/jmoiron/sqlx"
+	"github.com/rikuya98/goTodoApp/apperrors"
 	"github.com/rikuya98/goTodoApp/models"
 )
 
@@ -21,6 +22,9 @@ func InsertTodo(db *sqlx.DB, todo models.Todo) (models.Todo, error) {
 		return models.Todo{}, err
 	}
 	id, _ := result.LastInsertId()
+	if id == 0 {
+		return models.Todo{}, apperrors.ErrNoData
+	}
 	newTodo = models.Todo{
 		Id:      int(id),
 		Task:    todo.Task,
@@ -31,16 +35,34 @@ func InsertTodo(db *sqlx.DB, todo models.Todo) (models.Todo, error) {
 }
 
 func UpdateTodo(db *sqlx.DB, todo models.Todo) (models.Todo, error) {
-	_, err := db.Exec("UPDATE todos SET task = ?, due_date = ?, status = ? WHERE id = ?", todo.Task, todo.DueDate, todo.Status, todo.Id)
+	result, err := db.Exec("UPDATE todos SET task = ?, due_date = ?, status = ? WHERE id = ?", todo.Task, todo.DueDate, todo.Status, todo.Id)
+
 	if err != nil {
+		return models.Todo{}, err
+	}
+	rowsAffected, err := result.RowsAffected()
+
+	if err != nil {
+		return models.Todo{}, err
+	}
+	if rowsAffected == 0 {
+		err = apperrors.ErrNoData
 		return models.Todo{}, err
 	}
 	return todo, nil
 }
 
 func DeleteTodo(db *sqlx.DB, id int) error {
-	_, err := db.Exec("DELETE FROM todos WHERE id = ?", id)
+	result, err := db.Exec("DELETE FROM todos WHERE id = ?", id)
 	if err != nil {
+		return err
+	}
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rowsAffected == 0 {
+		err = apperrors.ErrNoData
 		return err
 	}
 	return nil

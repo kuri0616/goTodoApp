@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"github.com/rikuya98/goTodoApp/api/middlewares"
 	"github.com/rikuya98/goTodoApp/controllers/service"
 	"log"
 	"net/http"
@@ -22,7 +23,8 @@ func NewTodoController(service service.TodoService) *TodoController {
 func (s *TodoController) GetTodoHandler(w http.ResponseWriter, r *http.Request) {
 	todos, err := s.service.GetTodoServices()
 	if err != nil {
-		log.Println("Failed to get todos", err)
+		traceID := middlewares.GetTraceID(r.Context())
+		log.Printf("Failed to get todos. traceID: %d, err: %v", traceID, err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
@@ -38,12 +40,15 @@ func (s *TodoController) PostTodoHandler(w http.ResponseWriter, r *http.Request)
 	}
 	newTodo, err := s.service.PostTodoServices(todo)
 	if err != nil {
+		traceID := middlewares.GetTraceID(r.Context())
+		log.Printf("Failed to insert todo. traceID: %d, err: %v", traceID, err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(newTodo)
 }
+
 func (s *TodoController) PutTodoHandler(w http.ResponseWriter, r *http.Request) {
 	var todo models.Todo
 	var err error
@@ -62,7 +67,8 @@ func (s *TodoController) PutTodoHandler(w http.ResponseWriter, r *http.Request) 
 
 	updatedTodo, err := s.service.PutTodoServices(todo)
 	if err != nil {
-		println("Failed to update todo", err)
+		traceID := middlewares.GetTraceID(r.Context())
+		log.Printf("Failed to update todo. traceID: %d, err: %v", traceID, err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
@@ -72,13 +78,15 @@ func (s *TodoController) PutTodoHandler(w http.ResponseWriter, r *http.Request) 
 
 func (s *TodoController) DeleteTodoHandler(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(mux.Vars(r)["id"])
+
 	if err != nil {
 		http.Error(w, "Bad Request", http.StatusBadRequest)
 		return
 	}
 	err = s.service.DeleteTodoServices(id)
 	if err != nil {
-		println("Failed to delete todo", err)
+		traceID := middlewares.GetTraceID(r.Context())
+		log.Printf("Failed to delete todo. traceID: %d, err: %v", traceID, err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
