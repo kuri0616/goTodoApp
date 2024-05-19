@@ -10,6 +10,8 @@ var (
 	mu    sync.Mutex
 )
 
+type traceIDKey struct{}
+
 func newTraceID() int {
 	var no int
 
@@ -22,10 +24,11 @@ func newTraceID() int {
 }
 
 func SetTraceID(ctx context.Context, traceID int) context.Context {
-	return context.WithValue(ctx, "traceID", traceID)
+	return context.WithValue(ctx, traceIDKey{}, traceID)
 }
+
 func GetTraceID(ctx context.Context) int {
-	traceID, ok := ctx.Value("traceID").(int)
+	traceID, ok := ctx.Value(traceIDKey{}).(int)
 	if !ok {
 		return 0
 	}
