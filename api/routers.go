@@ -20,6 +20,6 @@ func NewRouter() *mux.Router {
 	r.HandleFunc("/todo", con.PostTodoHandler).Methods(http.MethodPost)
 	r.HandleFunc("/todo/{id}", con.PutTodoHandler).Methods(http.MethodPut)
 	r.HandleFunc("/todo/{id}", con.DeleteTodoHandler).Methods(http.MethodDelete)
-	r.Use(middlewares.LoggingMiddleware)
+	r.Use(middlewares.AuthMiddleware, middlewares.LoggingMiddleware)
 	return r
 }

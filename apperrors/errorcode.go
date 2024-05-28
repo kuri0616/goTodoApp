@@ -9,6 +9,11 @@ const (
 	GetDataFailed    ErrCode = "S003"
 	DeleteDataFailed ErrCode = "S004"
 	UpdateDataFailed ErrCode = "S005"
+
+	RequireAuthorizationHeader ErrCode = "A001"
+	CanNotMakeValidator        ErrCode = "A002"
+	IllegalToken               ErrCode = "A003"
+	NotMatchUser               ErrCode = "A004"
 )
 
 func (e ErrCode) Wrap(err error, message string) error {
